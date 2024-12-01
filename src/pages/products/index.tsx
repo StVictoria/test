@@ -1,10 +1,12 @@
 import { TextField } from "@mui/material";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import ProductList from "@/components/ProductsList/ProductsList";
 import { GetServerSideProps } from "next";
 import { TProduct } from "@/types/products";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/store/productsSlice";
+import Search from "@/components/Search/Search";
+import debounce from "@/utils/debounce";
 
 interface IProducts {
   products: TProduct[];
@@ -13,20 +15,25 @@ interface IProducts {
 const ProductsPage: FC<IProducts> = ({ products }) => {
   const dispatch = useDispatch();
 
+  const [filteredProducts, setFilteredProducts] =
+    useState<TProduct[]>(products);
+
+  const handleSearch = debounce((queryStr: string) => {
+    setFilteredProducts(
+      products.filter((product: TProduct) =>
+        product.title.toLowerCase().includes(queryStr.toLowerCase())
+      )
+    );
+  });
+
   useEffect(() => {
     dispatch(setProducts(products));
   }, []);
 
   return (
     <main>
-      <TextField
-        fullWidth
-        id="outlined-basic"
-        label="Search"
-        variant="outlined"
-        sx={{ marginBottom: "40px" }}
-      />
-      <ProductList />
+      <Search onSearch={handleSearch} />
+      <ProductList list={filteredProducts} />
     </main>
   );
 };
