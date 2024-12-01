@@ -12,9 +12,11 @@ const ProductCard: FC<IProductCard> = ({ cardInfo }) => {
 
   return (
     <Card className={s.productCard}>
-      <h3>📖 {title}</h3>
-      <div className={s.price}>$ {price}</div>
-      <p>{shortDesc}</p>
+      <div>
+        <h3>📖 {title}</h3>
+        <div className={s.price}>$ {price}</div>
+        <p>{shortDesc}</p>
+      </div>
     </Card>
   );
 };

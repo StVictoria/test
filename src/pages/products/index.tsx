@@ -1,4 +1,3 @@
-import { TextField } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import ProductList from "@/components/ProductsList/ProductsList";
 import { GetServerSideProps } from "next";
@@ -7,12 +6,15 @@ import { useDispatch } from "react-redux";
 import { setProducts } from "@/store/productsSlice";
 import Search from "@/components/Search/Search";
 import debounce from "@/utils/debounce";
+import { TGetProductsResponse } from "@/types/responses";
+import { PRODUCTS_LOAD_LIMIT } from "@/utils/constants";
 
 interface IProducts {
   products: TProduct[];
+  allProductsLength: number;
 }
 
-const ProductsPage: FC<IProducts> = ({ products }) => {
+const ProductsPage: FC<IProducts> = ({ products, allProductsLength }) => {
   const dispatch = useDispatch();
 
   const [filteredProducts, setFilteredProducts] =
@@ -27,7 +29,7 @@ const ProductsPage: FC<IProducts> = ({ products }) => {
   });
 
   useEffect(() => {
-    dispatch(setProducts(products));
+    dispatch(setProducts({ products, allProductsLength }));
   }, []);
 
   return (
@@ -39,11 +41,14 @@ const ProductsPage: FC<IProducts> = ({ products }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch("http://localhost:3000/api/products");
-  const products: TProduct[] = await res.json();
+  const res = await fetch(
+    `http://localhost:3000/api/products?amount=${PRODUCTS_LOAD_LIMIT}&offset=0`
+  );
+  const { products, allProductsLength }: TGetProductsResponse =
+    await res.json();
 
   return {
-    props: { products },
+    props: { products, allProductsLength },
   };
 };
 

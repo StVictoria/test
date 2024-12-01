@@ -1,13 +1,17 @@
 .productCard {
-    padding: 24px;
-    // transition: 0.4s transform;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 24px;
+  // transition: 0.4s transform;
 
-    // &:hover {
-    //     transform: scale(1.06);
-    // }
+  // &:hover {
+  //     transform: scale(1.06);
+  // }
 }
 
 .price {
-    color: grey;
-    margin: 16px 0;
+  color: grey;
+  margin: 16px 0;
 }

@@ -1,0 +1,1 @@
+export const PRODUCTS_LOAD_LIMIT = 9

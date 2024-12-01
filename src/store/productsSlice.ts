@@ -3,18 +3,26 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type TProductsState = {
   products: TProduct[];
+  allProductsLength: number;
 };
 
 const initialState: TProductsState = {
   products: [],
+  allProductsLength: 0,
 };
 
 const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    setProducts(state, action: PayloadAction<TProduct[]>) {
-      state.products = action.payload;
+    setProducts(
+      state,
+      {
+        payload: { products, allProductsLength },
+      }: PayloadAction<TProductsState>
+    ) {
+      state.products = [...state.products, ...products];
+      state.allProductsLength = allProductsLength;
     },
   },
 });
