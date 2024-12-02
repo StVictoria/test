@@ -2,12 +2,12 @@ import { FC, useEffect, useState } from "react";
 import ProductList from "@/components/ProductsList/ProductsList";
 import { GetServerSideProps } from "next";
 import { TProduct } from "@/types/products";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "@/store/productsSlice";
 import Search from "@/components/Search/Search";
-import debounce from "@/utils/debounce";
 import { TGetProductsResponse } from "@/types/responses";
-import { PRODUCTS_LOAD_LIMIT } from "@/utils/constants";
+import { BASE_URL, PRODUCTS_LOAD_LIMIT } from "@/utils/constants";
+import { RootState } from "@/store/store";
 
 interface IProducts {
   products: TProduct[];
@@ -16,33 +16,27 @@ interface IProducts {
 
 const ProductsPage: FC<IProducts> = ({ products, allProductsLength }) => {
   const dispatch = useDispatch();
-
-  const [filteredProducts, setFilteredProducts] =
-    useState<TProduct[]>(products);
-
-  const handleSearch = debounce((queryStr: string) => {
-    setFilteredProducts(
-      products.filter((product: TProduct) =>
-        product.title.toLowerCase().includes(queryStr.toLowerCase())
-      )
-    );
-  });
+  const { products: storedProducts } = useSelector(
+    (state: RootState) => state.products
+  );
 
   useEffect(() => {
-    dispatch(setProducts({ products, allProductsLength }));
+    if (!storedProducts.length) {
+      dispatch(setProducts({ products, allProductsLength }));
+    }
   }, []);
 
   return (
     <main>
-      <Search onSearch={handleSearch} />
-      <ProductList list={filteredProducts} />
+      <Search />
+      <ProductList />
     </main>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const res = await fetch(
-    `http://localhost:3000/api/products?amount=${PRODUCTS_LOAD_LIMIT}&offset=0`
+    `${BASE_URL}/products?amount=${PRODUCTS_LOAD_LIMIT}&offset=0`
   );
   const { products, allProductsLength }: TGetProductsResponse =
     await res.json();

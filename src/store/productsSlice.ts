@@ -4,11 +4,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type TProductsState = {
   products: TProduct[];
   allProductsLength: number;
+  searchText: string;
 };
 
 const initialState: TProductsState = {
   products: [],
   allProductsLength: 0,
+  searchText: "",
 };
 
 const productsSlice = createSlice({
@@ -19,13 +21,16 @@ const productsSlice = createSlice({
       state,
       {
         payload: { products, allProductsLength },
-      }: PayloadAction<TProductsState>
+      }: PayloadAction<{ products: TProduct[]; allProductsLength: number }>
     ) {
       state.products = [...state.products, ...products];
       state.allProductsLength = allProductsLength;
     },
+    setSearchText(state, { payload }: PayloadAction<string>) {
+      state.searchText = payload;
+    },
   },
 });
 
-export const { setProducts } = productsSlice.actions;
+export const { setProducts, setSearchText } = productsSlice.actions;
 export default productsSlice.reducer;

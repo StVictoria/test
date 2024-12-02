@@ -1,16 +1,15 @@
+import { setSearchText } from "@/store/productsSlice";
+import { RootState } from "@/store/store";
 import { TextField } from "@mui/material";
-import { FC, useState } from "react";
+import { FC } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-interface ISearch {
-  onSearch: (queryStr: string) => void;
-}
-
-const Search: FC<ISearch> = ({ onSearch }) => {
-  const [searchText, setSearchText] = useState("");
+const Search: FC = () => {
+  const dispatch = useDispatch();
+  const { searchText } = useSelector((state: RootState) => state.products);
 
   const handleChange = (value: string) => {
-    setSearchText(value);
-    onSearch(value);
+    dispatch(setSearchText(value));
   };
 
   return (

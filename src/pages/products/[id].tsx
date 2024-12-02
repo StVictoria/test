@@ -4,6 +4,7 @@ import { FC } from "react";
 import s from "./ProductPage.module.scss";
 import Image from "next/image";
 import bookImg from "@/assets/bookImg.png";
+import { BASE_URL } from "@/utils/constants";
 
 interface IProductPage {
   product: TProduct;
@@ -34,7 +35,7 @@ export const getServerSideProps = async (
 ) => {
   const { id } = context.query;
 
-  const res = await fetch(`http://localhost:3000/api/products/${id}`);
+  const res = await fetch(`${BASE_URL}/products/${id}`);
   const product = await res.json();
 
   if (!res.ok) {
